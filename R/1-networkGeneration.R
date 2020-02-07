@@ -5,7 +5,6 @@ library(tidyr)
 library(dplyr)
 library(ggplot2)
 library(forcats)
-library(ggbio)
 library(raster)
 library(lsa)
 library(purrr)
@@ -16,16 +15,6 @@ load("data/total_tidy.rda")
 
 years <- total_tidy %>% pull(Date) %>% format("%Y") %>% unique()
 years <- years[-length(years)]
-
-dates <- as.Date(c(as.Date("2018-01-01"):as.Date("2018-01-30")))
-
-sample_total_tidy <- total_tidy %>% 
-  filter(Date %in% dates) %>% 
-  dplyr::select(Date, Ticker, vol_x_normal, vol_y_normal) %>% 
-  mutate(Ticker = as.character(Ticker))
-
-x <- sample_total_tidy
-
 
 cos_vectors <- function(x1,x2,y1,y2){
   dot.prod_x <- x1 * x2
@@ -46,7 +35,39 @@ calculate_cosine <- function(x){
   return(res)
 }
 
+for (year in years) {
+  
+  dates <- seq(from = as.Date(paste0(year, "-01-01")), to = as.Date(paste0(year, "-12-31")), "days")
+  
+  sample_total_tidy <- total_tidy %>% 
+    filter(Date %in% dates) %>% 
+    dplyr::select(Date, Ticker, vol_x_normal, vol_y_normal) %>% 
+    mutate(Ticker = as.character(Ticker))
+  
+  unique_dates <- sample_total_tidy %>% pull(Date) %>% unique()
+  
+  daily_res <- list()
+  for (day in unique_dates){
+    
+    sample_day_tidy <- sample_total_tidy %>% filter(Date == day)
+    
+    daily_res[[as.character(as.Date(day))]] <- calculate_cosine(sample_day_tidy) %>% 
+      dplyr::select(Date, Ticker, Ticker2, cos_vecs)
+    
+  }
+  
+  save_dir <- paste0("data/daily_cosinus_", year, ".rda")
+  save(daily_res, file = save_dir)
+}
 
-res <- calculate_cosine(sample_total_tidy)
 
-ggplot(res, aes(res$cos_vecs))+geom_histogram()
+
+# daily network -----------------------------------------------------------
+
+day_network_sample <- daily_res[[1]]
+
+
+
+
+
+

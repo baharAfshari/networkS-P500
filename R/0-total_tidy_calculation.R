@@ -6,7 +6,6 @@ library(tidyr)
 library(dplyr)
 library(ggplot2)
 library(forcats)
-library(ggbio)
 library(raster)
 library(lsa)
 
@@ -34,7 +33,7 @@ normal_tidy <- normal_tidy %>%
   mutate(Date = as.Date(Date))
 
 save(normal_tidy, file = "data/normal_tidy.rda")
-
+load("data/normal_tidy.rda")
 
 # total_tidy --------------------------------------------------------------
 total_tidy <- normal_tidy %>%
