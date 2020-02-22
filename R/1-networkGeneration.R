@@ -62,7 +62,7 @@ for (year in years) {
 
 
 
-# daily network -----------------------------------------------------------
+# daily network normal day -----------------------------------------------------------
 
 day_network_sample <- daily_res[[1]]
 
