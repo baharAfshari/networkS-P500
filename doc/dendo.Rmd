@@ -1,0 +1,157 @@
+---
+title: "dendogram-CvsN"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+## Libraries
+
+the libraries that I use
+
+```{r library, include=FALSE}
+library(igraph)
+library(ggnetwork)
+library(tidyr)
+library(tibble)
+library(gplots)
+library(dendextend)
+library(tidyverse)
+library(RColorBrewer)
+```
+
+
+## My Data
+
+Below you can see the head of my data for a normal sample day. This data has "Date," as you can see, also "Ticker" and "Ticker2" as two-node, and the weight of links is according to the cosine of between these shares.
+
+```{r data, echo=FALSE}
+
+load("/home/bahar/Desktop/project/networkS-P500/data/daily_cosinus_2018.rda")
+head(daily_res[1])
+
+```
+
+## Heatmap of normal day
+
+You can see the heatmap of the typical sample day.
+
+```{r heatmap_normal, echo=FALSE}
+# heatmap + dendogram for a normal day ------------------------------------
+day_network_sample <- daily_res[[1]]
+s_day_network_sample <- spread(day_network_sample[,-1], Ticker2, cos_vecs)
+s_day_network_sample <- column_to_rownames(s_day_network_sample, var = "Ticker")
+s_day_network_sample[is.na(s_day_network_sample)] <- 0
+s_day_network_sample <- s_day_network_sample+ t(s_day_network_sample)
+s_day_network_sample <- as.matrix(s_day_network_sample)
+
+# custom palette
+my_palette <- colorRampPalette(c("red", "purple", "blue"))(n = 299)
+# (optional) defines the color breaks manually for a "skewed" color transition
+col_breaks = c(seq(-1,-0.3,length=100),  # for red
+               seq(-0.3, 0.3,length=100),              # for yellow
+               seq(0.3, 1,length=100))              # for green
+
+dist_s_sample <- dist(s_day_network_sample, method="euclidean")
+dist_s_sample<- as.matrix(dist_s_sample)
+heatmap.2(s_day_network_sample,
+          density.info="none",  
+          trace="none",         
+          margins =c(12,9),    
+          col=my_palette,
+          dendrogram='both',     
+          Rowv=T,
+          Colv="Rowv",
+          symm= T, revC = identical("Colv", "Rowv")) 
+
+
+```
+
+
+## Heatmap of critical day
+
+You can see the heatmap of sample crash day: 
+
+```{r heatmapCrash, echo=FALSE}
+# heatmap + dendogram for a crash day -------------------------------------
+
+crash_day <- daily_res[["2018-12-24"]]
+
+crash_day_sample <- spread(crash_day[,-1], Ticker2, cos_vecs)
+crash_day_sample <- column_to_rownames(crash_day_sample, var = "Ticker")
+crash_day_sample[is.na(crash_day_sample)] <- 0
+crash_day_sample <- crash_day_sample + t(crash_day_sample)
+crash_day_sample <- as.matrix(crash_day_sample)
+
+# custom palette
+my_palette <- colorRampPalette(c("red", "purple", "blue"))(n = 299)
+# (optional) defines the color breaks manually for a "skewed" color transition
+col_breaks = c(seq(-1,-0.3,length=100),  # for red
+               seq(-0.3, 0.3,length=100),              # for yellow
+               seq(0.3, 1,length=100))              # for green
+
+dist_crash_day <- dist(crash_day_sample, method="euclidean")
+dist_crash_day<- as.matrix(dist_crash_day)
+heatmap.2(crash_day_sample,
+          density.info="none",  
+          trace="none",         
+          margins =c(12,9),    
+          col=my_palette,
+          dendrogram='both',     
+          Rowv=T,
+          Colv="Rowv",
+          symm= T, revC = identical("Colv", "Rowv")) 
+
+
+```
+
+## clusters
+
+Now we want to count how many clusters we have for a normal sample day.
+
+```{r clusterNormal, echo=FALSE}
+
+  s_day_network_sample <- spread(day_network_sample[,-1], Ticker2, cos_vecs)
+  s_day_network_sample <- column_to_rownames(s_day_network_sample, var = "Ticker")
+  s_day_network_sample[is.na(s_day_network_sample)] <- 0
+  s_day_network_sample <- s_day_network_sample + t(s_day_network_sample)
+  
+  normal.dist <- as.dist(s_day_network_sample)
+  normal.tree <- hclust(normal.dist, method="complete")
+  normal.dend <- as.dendrogram(normal.tree) # create dendrogram object
+  clusters <- cutree(normal.dend, h=1.5)
+  
+  table(clusters)
+
+```
+
+plot of this dendogram for normal day is:
+```{r dendoN}
+plot(color_branches(normal.dend, h=1.5),leaflab="none")
+```
+
+Now we want to count how many clusters we have for a sample crash day
+
+```{r clusterCrash, echo=FALSE}
+  crash_day <- daily_res[["2018-12-24"]]
+  crash_day_sample <- spread(crash_day[,-1], Ticker2, cos_vecs)
+  crash_day_sample <- column_to_rownames(crash_day_sample, var = "Ticker")
+  crash_day_sample[is.na(crash_day_sample)] <- 0
+  crash_day_sample <- crash_day_sample + t(crash_day_sample)
+  
+  crash.dist <- as.dist(crash_day_sample)
+  crash.tree <- hclust(crash.dist, method="complete")
+  crash.dend <- as.dendrogram(crash.tree) # create dendrogram object
+  clusters <- cutree(crash.dend, h=1.5)
+  
+  table(clusters)
+
+```
+
+plot of this dendogram for normal day is:
+```{r dendoC}
+plot(color_branches(crash.dend, h=1.5),leaflab="none")
+```
