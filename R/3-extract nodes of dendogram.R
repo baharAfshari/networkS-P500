@@ -9,7 +9,7 @@ load("data/daily_cosinus_2018.rda")
 # s_day_network_sample <- column_to_rownames(s_day_network_sample, var = "Ticker")
 # s_day_network_sample[is.na(s_day_network_sample)] <- 0
 # 
-# normal.dist <- as.dist(1 - s_day_network_sample)
+# normal.dist <- as.dist(s_day_network_sample)
 # normal.tree <- hclust(normal.dist, method="complete")
 # normal.dend <- as.dendrogram(normal.tree) # create dendrogram object
 # plot(normal.dend, leaflab = "none")
@@ -21,7 +21,7 @@ load("data/daily_cosinus_2018.rda")
 # table(clusters)
 # 
 # clusters[1:6]
-# plot(color_branches(normal.dend, h=1.5),leaflab="none")
+# plot(color_branches(normal.dend, h=1),leaflab="none")
 # 
 # clusters.df <- data.frame(Ticker = names(clusters), cluster = clusters)
 # cluster1.n <- filter(clusters.df, cluster == 1)$Ticker
@@ -40,10 +40,10 @@ cluster_extraction <- function(x){
   s_day_network_sample[is.na(s_day_network_sample)] <- 0
   s_day_network_sample <- s_day_network_sample + t(s_day_network_sample)
   
-  normal.dist <- as.dist(1 - s_day_network_sample)
+  normal.dist <- as.dist(s_day_network_sample)
   normal.tree <- hclust(normal.dist, method="complete")
   normal.dend <- as.dendrogram(normal.tree) # create dendrogram object
-  clusters <- cutree(normal.dend, h=1)
+  clusters <- cutree(normal.dend, h=1.5)
   
   clusters.df <- data.frame(Ticker = names(clusters), cluster = clusters)
   rownames(clusters.df) <- NULL
