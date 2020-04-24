@@ -20,3 +20,24 @@ for (day in 1:length(daily_res_lag1)) {
   
   
 }
+
+
+# plot --------------------------------------------------------------------
+
+# custom palette
+my_palette <- colorRampPalette(c("red", "purple", "blue"))(n = 299)
+# (optional) defines the color breaks manually for a "skewed" color transition
+col_breaks = c(seq(-1,-0.3,length=100),  # for red
+               seq(-0.3, 0.3,length=100),              # for yellow
+               seq(0.3, 1,length=100))              # for green
+
+heatmap.2(sym_lag_1day,
+          density.info="none",  
+          trace="none",         
+          margins =c(12,9),    
+          col=my_palette,
+          dendrogram='none',     
+          Rowv=T,
+          Colv="Rowv",
+          symm= T, revC = identical("Colv", "Rowv")) 
+
