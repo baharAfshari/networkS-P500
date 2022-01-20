@@ -83,7 +83,7 @@ for (year in years) {
 
 for (year in years) {
   
-  dist_in <- paste0("data/multilag/daily_cosinus_multilag_", year, ".rda")
+  dist_in <- paste0("data/multilag/daily_cosinus_multilag3_", year, ".rda")
   load(dist_in)
   multilags <- list()
   
@@ -114,7 +114,7 @@ col_breaks = c(seq(-1,-0.3,length=100),  # for red
                seq(0.3, 1,length=100))              # for green
 
 
-day <- "2018-12-10"
+day <- "2019-01-04"
 heatmap.2(multilags[[day]],
           density.info="none",  
           trace="none",         

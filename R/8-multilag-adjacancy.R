@@ -9,7 +9,7 @@ library(gplots)
 
 # loading data ------------------------------------------------------------
 load("data/total_tidy.rda")
-
+years <- 2007:2018
 
 pmax.abs <- function(x, y) {
   z <- y
