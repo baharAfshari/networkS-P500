@@ -48,4 +48,4 @@ for (i in 1:length(list_of_files)) {
 }
 
 totdal_tidy <- bind_rows(total_tidy_list)
-save(total_tidy_list, file = "data/crypto/total_tidy.rda")
+save(total_tidy, file = "data/crypto/total_tidy.rda")
