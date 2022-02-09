@@ -43,7 +43,7 @@ cluster_extraction <- function(x){
   normal.dist <- as.dist(s_day_network_sample)
   normal.tree <- hclust(normal.dist, method="complete")
   normal.dend <- as.dendrogram(normal.tree) # create dendrogram object
-  clusters <- cutree(normal.dend, h=1.5)
+  clusters <- cutree(normal.dend, h=1.99999)
   
   clusters.df <- data.frame(Ticker = names(clusters), cluster = clusters)
   rownames(clusters.df) <- NULL

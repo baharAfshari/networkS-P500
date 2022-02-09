@@ -7,7 +7,8 @@ library(gplots)
 load("data/crypto/daily_cosinus_2018.rda")
 
 # heatmap + dendogram for a normal day ------------------------------------
-day_network_sample <- daily_res[[1]]
+day_network_sample <- daily_res[["2021-02-13"]]
+# day_network_sample <- daily_res[[1]]
 s_day_network_sample <- spread(day_network_sample[,-1], Ticker2, cos_vecs)
 s_day_network_sample <- column_to_rownames(s_day_network_sample, var = "Ticker")
 s_day_network_sample[is.na(s_day_network_sample)] <- 0
@@ -35,7 +36,7 @@ heatmap.2(s_day_network_sample,
 
 # heatmap + dendogram for a crash day -------------------------------------
 
-crash_day <- daily_res[["2018-12-24"]]
+crash_day <- daily_res[["2021-02-23"]]
 
 crash_day_sample <- spread(crash_day[,-1], Ticker2, cos_vecs)
 crash_day_sample <- column_to_rownames(crash_day_sample, var = "Ticker")
